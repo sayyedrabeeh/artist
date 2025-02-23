@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sketch Studio</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <style>
+        .neon-glow {
+            text-shadow: 0 0 10px #6366f1, 0 0 20px #6366f1, 0 0 30px #6366f1;
+        }
+        .gradient-dark {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+        }
+        .gradient-accent {
+            background: linear-gradient(145deg, #4f46e5, #7c3aed);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+    </style>
+</head>
+<body class=".gradient-dark text-gray-100">
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-[#0f0f1a]/80 backdrop-blur-lg z-50 border-b border-indigo-900/30">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="flex items-center space-x-2">
+                <i class="fas fa-paint-brush text-violet-400"></i>
+                <span class="text-xl font-bold text-violet-400">AI Sketch Studio</span>
+            </a>
+            <nav>
+                <a href="{% url 'home' %}" class="text-violet-400 hover:text-violet-300 transition-colors">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="min-h-screen pt-20 px-4 pb-12" style="   background-color: #181d36;
+">
+        <div class="max-w-7xl mx-auto">
+            <!-- Title Section -->
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold neon-glow mb-4">Transform Your Images</h1>
+                <p class="text-violet-300 text-xl">Experience AI-powered artistic transformation</p>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="gradient-dark rounded-2xl shadow-2xl p-8 mb-12 card-hover border border-indigo-900/30">
+                <form method="post" enctype="multipart/form-data" id="uploadForm" class="space-y-8">
+                    {% csrf_token %}
+                    <div class="border-2 border-dashed border-indigo-800/50 rounded-2xl p-12 text-center hover:border-violet-500/50 transition-colors duration-300 bg-[#1a1a2e]/50" id="dropZone">
+                        <input type="file" name="{{ form.image.name }}" accept="image/*" class="hidden" id="fileInput">
+                        <label for="fileInput" class="cursor-pointer block">
+                            <i class="fas fa-cloud-upload-alt text-7xl text-violet-400 mb-6"></i>
+                            <h3 class="text-2xl font-semibold text-violet-300 mb-2">Upload Your Image</h3>
+                            <p class="text-gray-400">Drag and drop or click to select</p>
+                        </label>
+                        <div class="mt-6 flex justify-center gap-3">
+                            <span class="px-4 py-2 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">JPG</span>
+                            <span class="px-4 py-2 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">PNG</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="gradient-accent text-white font-bold py-4 px-10 rounded-full text-lg shadow-xl hover:opacity-90 transition duration-300 inline-flex items-center">
+                            <i class="fas fa-wand-magic-sparkles mr-2"></i>
+                            Generate Sketches
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            {% if sketchurl1 and sketchurl2 %}
+            <div class="gradient-dark rounded-2xl shadow-2xl p-8 card-hover border border-indigo-900/30">
+                <h2 class="text-3xl font-bold mb-10 text-center neon-glow">Your Artistic Creations</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Original Image -->
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Original Image</h3>
+                        <img src="{{ original_url }}" alt="Original" class="rounded-lg shadow-lg w-full object-cover">
+                    </div>
+
+                    <!-- Edge-Based Sketch -->
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Edge Sketch</h3>
+                        <img src="{{ sketchurl1 }}" alt="Edge Sketch" class="rounded-lg shadow-lg w-full object-cover">
+                        <div class="mt-4">
+                            <a href="{{ sketchurl1 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Pencil Sketch -->
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Pencil Sketch</h3>
+                        <img src="{{ sketchurl2 }}" alt="Pencil Sketch" class="rounded-lg shadow-lg w-full object-cover">
+                        <div class="mt-4">
+                            <a href="{{ sketchurl2 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Loading Indicator -->
+    <div id="loading" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50">
+        <div class="bg-[#1a1a2e] p-8 rounded-2xl shadow-2xl text-center border border-indigo-900/30">
+            <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-violet-500 border-solid mx-auto mb-6"></div>
+            <p class="text-violet-300 text-xl font-semibold">Creating Your Artwork</p>
+            <p class="text-gray-400 mt-2">This may take a moment...</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const loading = document.getElementById('loading');
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+
+        form.addEventListener('submit', () => {
+            loading.classList.remove('hidden');
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('bg-[#1a1a2e]');
+            dropZone.classList.add('border-violet-500');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('bg-[#1a1a2e]');
+            dropZone.classList.remove('border-violet-500');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('bg-[#1a1a2e]');
+            dropZone.classList.remove('border-violet-500');
+            fileInput.files = e.dataTransfer.files;
+            updateFileName(e.dataTransfer.files[0].name);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                updateFileName(e.target.files[0].name);
+            }
+        });
+
+        function updateFileName(name) {
+            const label = dropZone.querySelector('p');
+            label.textContent = `Selected: ${name}`;
+            label.classList.add('text-violet-400');
+        }
+    </script>
+</body>
+</html>

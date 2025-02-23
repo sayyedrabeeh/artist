@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artistic Sketch Converter - Dark</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <style>
+        .neon-glow {
+            text-shadow: 0 0 10px #6366f1, 0 0 20px #6366f1, 0 0 30px #6366f1;
+        }
+        .gradient-dark {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+        }
+        .gradient-accent {
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        }
+        .hover-grow {
+            transition: all 0.3s ease;
+        }
+        .hover-grow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <div class="min-h-screen flex flex-col items-center justify-center p-6">
+        <div class="text-center mb-12 hover-grow w-full max-w-4xl">
+            <div class="gradient-dark rounded-2xl p-10 shadow-2xl border border-indigo-900">
+                <h1 class="text-5xl font-bold mb-4 neon-glow">Artistic Sketch Creator</h1>
+                <p class="text-xl text-violet-300">Transform your photos into mesmerizing sketches</p>
+            </div>
+        </div>
+        
+        <div class="gradient-dark p-10 rounded-2xl shadow-2xl text-center max-w-2xl w-full hover-grow border border-indigo-900">
+            <div class="mb-8">
+                <i class="fas fa-pencil-alt text-6xl text-violet-400"></i>
+            </div>
+            <h2 class="text-3xl font-bold mb-4 text-violet-300">Ready to Create?</h2>
+            <p class="text-gray-300 text-lg mb-8">Experience the magic of AI-powered artistic transformation</p>
+            <a href="{% url 'upload' %}" class="gradient-accent text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg hover:opacity-90 transition duration-300 inline-flex items-center">
+                <span>Start Creating</span>
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+
+        <div class="mt-16 text-center max-w-4xl w-full">
+            <h3 class="text-2xl font-bold mb-8 text-violet-300">The Creative Process</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="gradient-dark p-6 rounded-xl shadow-lg hover-grow border border-indigo-900">
+                    <div class="gradient-accent p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-upload text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2 text-violet-300">1. Upload</h4>
+                    <p class="text-gray-300">Share your image in JPG or PNG format</p>
+                </div>
+                <div class="gradient-dark p-6 rounded-xl shadow-lg hover-grow border border-indigo-900">
+                    <div class="gradient-accent p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-wand-magic-sparkles text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2 text-violet-300">2. Transform</h4>
+                    <p class="text-gray-300">Watch as AI creates your sketch</p>
+                </div>
+                <div class="gradient-dark p-6 rounded-xl shadow-lg hover-grow border border-indigo-900">
+                    <div class="gradient-accent p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-download text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2 text-violet-300">3. Download</h4>
+                    <p class="text-gray-300">Get your finished masterpiece</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
