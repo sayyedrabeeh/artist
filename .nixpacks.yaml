@@ -1,0 +1,6 @@
+build:
+  image: python:3.8
+  install:
+    - pip install -r requirements.txt
+  run:
+    - gunicorn sketch_project.wsgi
