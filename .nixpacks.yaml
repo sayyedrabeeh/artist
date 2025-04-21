@@ -1,6 +1,7 @@
 build:
   image: python:3.8
   install:
+    - pip install --upgrade pip
     - pip install -r requirements.txt
   run:
-    - gunicorn sketch_project.wsgi
+    - gunicorn sketch_project.wsgi:application --bind 0.0.0.0:$PORT
