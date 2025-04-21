@@ -1,0 +1,1 @@
+web: gunicorn sketch_project.wsgi
