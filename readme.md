@@ -53,7 +53,7 @@ Each function uses OpenCV techniques like:
 ![Upload Page](screenshots/homepage.png)
 
 ### 📸 Upload Page
-![Upload Page](screenshots/uploading page.png)
+![Upload Page](screenshots/uploadingpage.png)
 
 ### 📸 Result Page
 ![Upload Page](screenshots/results.png)
