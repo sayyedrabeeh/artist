@@ -77,17 +77,20 @@
             </div>
 
             <!-- Results Section -->
-            {% if sketchurl1 and sketchurl2 %}
+            {% if sketchurl1 and sketchurl2 and sketchurl3 and sketchurl4 and sketchurl5 and sketchurl6 %}
             <div class="gradient-dark rounded-2xl shadow-2xl p-8 card-hover border border-indigo-900/30">
                 <h2 class="text-3xl font-bold mb-10 text-center neon-glow">Your Artistic Creations</h2>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Original Image -->
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                <!-- Original Image Row -->
+                <div class="mb-8">
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30 max-w-md mx-auto">
                         <h3 class="text-xl font-semibold text-violet-300 mb-4">Original Image</h3>
                         <img src="{{ original_url }}" alt="Original" class="rounded-lg shadow-lg w-full object-cover">
                     </div>
-
+                </div>
+                
+                <!-- Artistic Effects Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Edge-Based Sketch -->
                     <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
                         <h3 class="text-xl font-semibold text-violet-300 mb-4">Edge Sketch</h3>
@@ -98,13 +101,55 @@
                             </a>
                         </div>
                     </div>
-
+            
                     <!-- Pencil Sketch -->
                     <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Pencil Sketch</h3>
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Pen Sketch</h3>
                         <img src="{{ sketchurl2 }}" alt="Pencil Sketch" class="rounded-lg shadow-lg w-full object-cover">
                         <div class="mt-4">
                             <a href="{{ sketchurl2 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </a>
+                        </div>
+                    </div>
+            
+                    <!-- Colored Pencil Sketch -->
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4"> Pencil Sketch</h3>
+                        <img src="{{ sketchurl3 }}" alt="Colored Pencil Sketch" class="rounded-lg shadow-lg w-full object-cover">
+                        <div class="mt-4">
+                            <a href="{{ sketchurl3 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </a>
+                        </div>
+                    </div>
+            
+                    <!-- Watercolor Effect -->
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Watercolor Painting</h3>
+                        <img src="{{ sketchurl4 }}" alt="Watercolor Painting" class="rounded-lg shadow-lg w-full object-cover">
+                        <div class="mt-4">
+                            <a href="{{ sketchurl4 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </a>
+                        </div>
+                    </div>
+            
+                    <!-- Oil Painting Effect -->
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Oil Painting</h3>
+                        <img src="{{ sketchurl5 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
+                        <div class="mt-4">
+                            <a href="{{ sketchurl5 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </a>
+                        </div>
+                    </div>
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Painting</h3>
+                        <img src="{{ sketchurl6 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
+                        <div class="mt-4">
+                            <a href="{{ sketchurl6 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
                                 <i class="fas fa-download mr-2"></i>Download
                             </a>
                         </div>
