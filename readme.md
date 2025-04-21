@@ -52,6 +52,12 @@ Each function uses OpenCV techniques like:
 ### 📸 Home Page
 ![Upload Page](screenshots/homepage.png)
 
+### 📸 Upload Page
+![Upload Page](screenshots/uploading page.png)
+
+### 📸 Result Page
+![Upload Page](screenshots/results.png)
+
 
 ## 🧾 Requirements
 
