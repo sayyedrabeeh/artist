@@ -49,6 +49,10 @@ Each function uses OpenCV techniques like:
 
 ---
 
+### 📸 Home Page
+![Upload Page](screenshots/homepage.png)
+
+
 ## 🧾 Requirements
 
 Create a `requirements.txt` file in your project directory with the following:
