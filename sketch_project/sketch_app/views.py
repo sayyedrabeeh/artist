@@ -293,6 +293,44 @@ def convert_to_pen_and_ink(image_pth):
     return output_path
 
 
+# spary painting
+
+def convert_to_spray_painting(image_path):
+
+    img = cv2.imread(image_path)
+    h,w = img.shape[:2]
+    if max(h,w) > 1200 :
+        scale = 1200/max(h,w)
+        img=cv2.resize(img,(int(h*scale),int(w*scale)))
+    
+    hsv = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+    hsv[...,1]= cv2.add(hsv[...,1],40)
+    img_statured = cv2.cvtColor(hsv,cv2.COLOR_HSV2BGR)
+
+    blurred =cv2.GaussianBlur(img_statured,(11,11),3)
+
+    noise = np.random.normal(0,20,img.shape).astype(np.int16)
+    noisy_img = np.clip(blurred.astype(np.int16)+noise,0,255).astype(np.uint8)
+
+    splatter = np.zeros((h,w),dtype=np.uint8)
+    
+    for _ in range(300):
+        x,y = np.random.randint(0,w),np.random.randint(0,h)
+        radius =np.random.randint(1,5)
+        cv2.circle(splatter,(x,y),radius,255,1)
+
+    splatter =cv2.GaussianBlur(splatter,(7,7),3)
+    splatter_mask = cv2.cvtColor(splatter,cv2.COLOR_GRAY2BGR)/255.0
+
+    spray_paint = noisy_img.astype(np.float32) * (1- splatter_mask) +splatter_mask *255
+    spray_paint = np.clip(spray_paint,0,255).astype(np.uint8)
+
+
+    output_path = image_path.replace('.jpg','spray_painting.jpg')
+    cv2.imwrite(output_path,spray_paint)
+    return output_path
+
+
 def uploadImage(request):
     sketchurl1 = None   
     sketchurl2 = None  
@@ -303,6 +341,7 @@ def uploadImage(request):
     sketchurl7 = None  
     sketchurl8 = None  
     sketchurl9 = None  
+    sketchurl10 = None  
     original_url=None
     
     if request.method == 'POST':
@@ -322,6 +361,7 @@ def uploadImage(request):
             sketch_path7 = convert_to_digital_painting(upload_image.image.path)  
             sketch_path8 = convert_to_acrylic_painting(upload_image.image.path)  
             sketch_path9 = convert_to_pen_and_ink(upload_image.image.path)  
+            sketch_path10 = convert_to_spray_painting(upload_image.image.path)  
             
             
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
@@ -333,6 +373,7 @@ def uploadImage(request):
             sketchurl7 = upload_image.image.url.replace('.jpg', 'digital_painting.jpg')
             sketchurl8 = upload_image.image.url.replace('.jpg', 'acrylic_painting.jpg')
             sketchurl9 = upload_image.image.url.replace('.jpg', 'pen_and_ink.jpg')
+            sketchurl10 = upload_image.image.url.replace('.jpg', 'spray_painting.jpg')
     
     else:
         form = imageuploadform()
@@ -349,6 +390,7 @@ def uploadImage(request):
         'sketchurl7': sketchurl7,
         'sketchurl8': sketchurl8,
         'sketchurl9': sketchurl9,
+        'sketchurl10': sketchurl10,
     })
 
 
