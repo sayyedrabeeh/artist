@@ -1,6 +1,8 @@
 from django.shortcuts import render
 import cv2
 import numpy as np
+import random
+import math
 from .forms import imageuploadform
 from .models import UploadedImage
 
@@ -363,6 +365,48 @@ def convert_to_tattoo_drawing(image_path):
     cv2.imwrite(output_path,tatoo_drawing)
     return output_path
 
+# hatching drawing
+
+def convert_to_hatching_drawing(image_path):
+
+    img = cv2.imread(image_path)
+    h,w=img.shape[:2]
+    if max(h,w)>1200:
+        scale = 1200/max(h,w)
+        img = cv2.resize(img,(int(h*scale),int(w*scale)))
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray,100,200)
+
+    hatching_image = np.ones((h,w,3),dtype=np.uint8) *255
+
+    line_spacing = 10 
+    max_line_density = 20
+
+    for y in range(0,h,line_spacing):
+        for x in range(0,w,line_spacing):
+            intensity = gray[y,x]
+
+            if intensity < 150 :
+                line_density = int((150 -intensity)/10)
+                for i in range(line_density):
+                    cv2.line(hatching_image, (x - 2, y + i * 2), (x + 30, y + i * 2), (0, 0, 0), 1)
+            if intensity > 100:
+                line_density = int((intensity-100)/10)
+                for i in range(line_density):
+                    angle = random.choice([45,135])
+                    length = random.randint(10,20)
+                    x_offset = int(math.cos(math.radians(angle)) * length)
+                    y_offset = int(math.sin(math.radians(angle)) * length)
+                    cv2.line(hatching_image, (x, y), (x + x_offset, y + y_offset), (0, 0, 0), 1)
+
+    hatching_image[edges == 255]=[0,0,0]
+
+    
+    output_path = image_path.replace('.jpg','hatching_image.jpg')
+    cv2.imwrite(output_path,hatching_image)
+    return output_path
+
+
 
 def uploadImage(request):
     sketchurl1 = None   
@@ -376,6 +420,7 @@ def uploadImage(request):
     sketchurl9 = None  
     sketchurl10 = None  
     sketchurl11 = None  
+    sketchurl12 = None  
     original_url=None
     
     if request.method == 'POST':
@@ -397,6 +442,7 @@ def uploadImage(request):
             sketch_path9 = convert_to_pen_and_ink(upload_image.image.path)  
             sketch_path10 = convert_to_spray_painting(upload_image.image.path)  
             sketch_path11 = convert_to_tattoo_drawing(upload_image.image.path)  
+            sketch_path12 = convert_to_hatching_drawing(upload_image.image.path)  
             
             
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
@@ -410,6 +456,7 @@ def uploadImage(request):
             sketchurl9 = upload_image.image.url.replace('.jpg', 'pen_and_ink.jpg')
             sketchurl10 = upload_image.image.url.replace('.jpg', 'spray_painting.jpg')
             sketchurl11 = upload_image.image.url.replace('.jpg', 'tatoo_drawing.jpg')
+            sketchurl12 = upload_image.image.url.replace('.jpg', 'hatching_image.jpg')
     
     else:
         form = imageuploadform()
@@ -428,6 +475,7 @@ def uploadImage(request):
         'sketchurl9': sketchurl9,
         'sketchurl10': sketchurl10,
         'sketchurl11': sketchurl11,
+        'sketchurl12': sketchurl12,
     })
 
 
