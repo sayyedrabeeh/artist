@@ -75,20 +75,41 @@ def convert_to_sketch_edges1(image_path):
     return sketch_path
 
 
+#  convert to pencil sketch 
+
+
 def convert_to_sketch_pencil(image_path):
     img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    height,width = gray.shape
+    max_dim =1200
+    if height > max_dim or width > max_dim:
+        scale = max_dim/max(height,width)
+        img = cv2.resize(img,(int(width*scale),int(height*scale)))
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     inverted_gray = 255 - gray
     blurred = cv2.GaussianBlur(inverted_gray, (21, 21), 0)
     inverted_blur = 255 - blurred
-    sketch = cv2.divide(gray, inverted_blur, scale=256.0)
-    
-    sketch = cv2.convertScaleAbs(sketch, alpha=1.5, beta=5)
+    dodge  = cv2.divide(gray, inverted_blur, scale=256)
 
- 
-    
+    edges = cv2.Laplacian(gray,cv2.CV_8U,ksize=5)
+    edges = cv2.threshold(edges,30,255,cv2.THRESH_BINARY_INV)[1]
+    edges = cv2.GaussianBlur(edges,(3,3),0)
+    edges = cv2.dilate(edges,np.ones((1,1),np.uint8),iterations = 1 )
+
+
+    sketch = cv2.multiply(dodge,edges,scale=1/255.0)
+    sketch = cv2.convertScaleAbs(sketch,alpha=1.7,beta=5)
+
+    papper_tuxture = np.random.normal(loc=128,scale=4,size=sketch.shape).astype(np.uint8)
+    papper_tuxture = cv2.GaussianBlur(papper_tuxture,(17,17),0)
+
+    final = cv2.multiply(sketch,papper_tuxture,scale=1/255)
+    final= np.clip(final,0,255).astype(np.uint8)
+     
+
     sketch_path = image_path.replace('.jpg', '_pencil.jpg')
-    cv2.imwrite(sketch_path, sketch)
+    cv2.imwrite(sketch_path, final)
     return sketch_path
 
 def convert_to_sketch_pencil1(image_path):
