@@ -7,23 +7,35 @@ from .models import UploadedImage
 def home(request):
     return render(request, 'home.html')
 
+# convert to sketch edges
+
 def convert_to_sketch_edges(image_path):
     img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(gray, 30, 120) 
-    edges = cv2.dilate(edges, None, iterations=2)   
+    blurred =cv2.GaussianBlur(gray,(21,21),0)
+
+    edges = cv2.Canny(blurred, 50, 150) 
+    edges = cv2.dilate(edges, None, iterations=2)
+
     edges_3channel = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
     edges_3channel = 255 - edges_3channel  
     
-    background = np.full_like(edges_3channel, (200, 200, 200), dtype=np.uint8)
+    background = np.full_like(edges_3channel, (230, 230, 230), dtype=np.uint8)
     
     
-    mask = (edges_3channel == [0, 0, 0])
-    for i in range(3):  
-        background[:, :, i][mask[:, :, i]] = 0  
+    mask = np.all(edges_3channel == [0, 0, 0], axis=-1)
+    background[mask] = [0,0,0]  
+
+    img_gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.cvtColor(img_gray,cv2.COLOR_GRAY2BGR)
+
+    sketch = cv2.bitwise_and(background,img_gray)
+
+    sketch = cv2.addWeighted(sketch,0.7,background,0.3,0)
 
     sketch_path = image_path.replace('.jpg', '_edges.jpg')
-    cv2.imwrite(sketch_path, background)
+    cv2.imwrite(sketch_path, sketch)
+
     return sketch_path
 
 def convert_to_sketch_edges1(image_path):
