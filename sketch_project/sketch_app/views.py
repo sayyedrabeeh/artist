@@ -264,7 +264,33 @@ def convert_to_acrylic_painting(image_path):
     cv2.imwrite(output_path,acrylic_painting)
     return output_path    
 
+# pen and ink drawing
 
+def convert_to_pen_and_ink(image_pth):
+
+    img = cv2.imread(image_pth)
+
+    h,w = img.shape[:2]
+    if max(h,w) > 1200:
+        scale = 1200/max(h,w)
+        img = cv2.resize(img,(int(h*scale),int(w*scale)))
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    inverted_gray = cv2.bitwise_not(gray)
+    blur = cv2.GaussianBlur(inverted_gray,(21,21),0)
+
+    sketch =cv2.divide(gray,255,inverted_gray,255)
+
+    _,ink_effect = cv2.threshold(sketch,127,255,cv2.THRESH_BINARY)
+
+    noise = np.random.normal(0,5,gray.shape).astype(np.uint8)
+
+    ink_effect = cv2.add(ink_effect,noise)
+
+    pen_and_ink = np.clip(ink_effect,0,255).astype(np.uint8)
+
+    output_path = image_pth.replace('.jpg','pen_and_ink.jpg')
+    cv2.imwrite(output_path,pen_and_ink)
+    return output_path
 
 
 def uploadImage(request):
@@ -276,6 +302,7 @@ def uploadImage(request):
     sketchurl6 = None  
     sketchurl7 = None  
     sketchurl8 = None  
+    sketchurl9 = None  
     original_url=None
     
     if request.method == 'POST':
@@ -294,6 +321,7 @@ def uploadImage(request):
             sketch_path6 = convert_to_charcoal(upload_image.image.path)  
             sketch_path7 = convert_to_digital_painting(upload_image.image.path)  
             sketch_path8 = convert_to_acrylic_painting(upload_image.image.path)  
+            sketch_path9 = convert_to_pen_and_ink(upload_image.image.path)  
             
             
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
@@ -304,6 +332,7 @@ def uploadImage(request):
             sketchurl6 = upload_image.image.url.replace('.jpg', 'charcoal.jpg')
             sketchurl7 = upload_image.image.url.replace('.jpg', 'digital_painting.jpg')
             sketchurl8 = upload_image.image.url.replace('.jpg', 'acrylic_painting.jpg')
+            sketchurl9 = upload_image.image.url.replace('.jpg', 'pen_and_ink.jpg')
     
     else:
         form = imageuploadform()
@@ -319,6 +348,7 @@ def uploadImage(request):
         'sketchurl6': sketchurl6,
         'sketchurl7': sketchurl7,
         'sketchurl8': sketchurl8,
+        'sketchurl9': sketchurl9,
     })
 
 
