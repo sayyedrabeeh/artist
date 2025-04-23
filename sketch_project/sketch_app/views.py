@@ -138,30 +138,34 @@ def convert_to_watercolor(image_path):
     cv2.imwrite(sketch_path, water_color)
     return sketch_path
 
-def convert_to_colored_pencil(image_path):
+# convert to oil painting
+
+def convert_to_oil_painting(image_path):
     img = cv2.imread(image_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    if img is None: return None
+    h,w = img.shape[:2]
+    if max(h,w) > 1200:
+      scale = 1200/max(h,w)
+      img = cv2.resize(img,(int(h*scale),int(w*scale)))
 
-    inverted_gray = 255 - gray
-    blurred = cv2.GaussianBlur(inverted_gray, (21, 21), 0)
-    inverted_blur = 255 - blurred
-    sketch = cv2.divide(gray, inverted_blur, scale=256.0)
+    stylezied = cv2.edgePreservingFilter(img,flags=1,sigma_s=100,sigma_r=0.5)
+    blur = cv2.bilateralFilter(stylezied,9,75,75)
+    sharpen_kernel = np.array([[0, -1, 0],
+                               [-1, 5,-1],
+                               [0, -1, 0]])
+    oil_paint = cv2.filter2D(blur,-1,sharpen_kernel)
 
-    
-    color_pencil = cv2.applyColorMap(img, cv2.COLORMAP_JET)  
-    blended = cv2.bitwise_and(color_pencil, color_pencil, mask=sketch)   
- 
-    output_path = image_path.replace('.jpg', '_pencil_colored.jpg')
-    cv2.imwrite(output_path, blended)
+    output_path = image_path.replace('.jpg', '_oil_paintig.jpg')
+    cv2.imwrite(output_path, oil_paint)
     return output_path
+
+ 
+
 
 def convert_to_colored_pencil1(image_path):
     img = cv2.imread(image_path)
-    
- 
     height, width = img.shape[:2]
-    
-     
+  
     max_dim = 1200
     if height > max_dim or width > max_dim:
         scale = max_dim / max(height, width)
@@ -277,7 +281,7 @@ def uploadImage(request):
             sketch_path2 = convert_to_sketch_pencil(upload_image.image.path)  
             sketch_path3 = convert_to_watercolor(upload_image.image.path)  
             sketch_path4 = convert_to_sketch_edges1(upload_image.image.path)  
-            sketch_path5 = convert_to_colored_pencil(upload_image.image.path)  
+            sketch_path5 = convert_to_oil_painting(upload_image.image.path)  
             sketch_path6 = convert_to_colored_pencil1(upload_image.image.path)  
             
             
@@ -285,7 +289,7 @@ def uploadImage(request):
             sketchurl2 = upload_image.image.url.replace('.jpg', '_edges1.jpg')
             sketchurl3 = upload_image.image.url.replace('.jpg', '_pencil.jpg')
             sketchurl4 = upload_image.image.url.replace('.jpg', '_watercolor.jpg')
-            sketchurl5 = upload_image.image.url.replace('.jpg', '_pencil_colored.jpg')
+            sketchurl5 = upload_image.image.url.replace('.jpg', '_oil_paintig.jpg')
             sketchurl6 = upload_image.image.url.replace('.jpg', '_pencil_colored1.jpg')
     
     else:
