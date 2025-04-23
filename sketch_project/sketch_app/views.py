@@ -112,7 +112,9 @@ def convert_to_sketch_pencil(image_path):
     cv2.imwrite(sketch_path, final)
     return sketch_path
 
-def convert_to_sketch_pencil1(image_path):
+#  convert to watercolor
+
+def convert_to_watercolor(image_path):
     img = cv2.imread(image_path)
     
     height, width = img.shape[:2]
@@ -120,60 +122,20 @@ def convert_to_sketch_pencil1(image_path):
     if height > max_dim or width > max_dim:
         scale = max_dim / max(height, width)
         img = cv2.resize(img, (int(width * scale), int(height * scale)))
+
+    img = cv2.edgePreservingFilter(img, flags=1, sigma_s=60, sigma_r=0.4)
+    water_color = cv2.stylization(img,sigma_s=60,sigma_r=0.6)
+
+    paper = np.ones_like(water_color)*240
+    grain = np.random.normal(0,2,paper.shape).astype(np.uint8)
+    paper =cv2.subtract(paper,grain)
+
+    paper = cv2.GaussianBlur(paper,(15,15),0)
+    water_color = cv2.addWeighted(water_color,0.85,paper,0.15,0)
+
     
-    
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
- 
-    smooth = cv2.edgePreservingFilter(img, flags=1, sigma_s=60, sigma_r=0.4)
-    gray_smooth = cv2.cvtColor(smooth, cv2.COLOR_BGR2GRAY)
-    
-  
-    inverted = 255 - gray_smooth
-    blurred = cv2.GaussianBlur(inverted, (21, 21), 0)
-    
-     
-    sketch_div = cv2.divide(gray_smooth, 255 - blurred, scale=256)
-    
-    
-    thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                   cv2.THRESH_BINARY, 11, 2)
-    
-    
-    thresh_inv = 255 - thresh
-    
- 
-    thresh_blur = cv2.GaussianBlur(thresh_inv, (3, 3), 0)
-    
-    
-    paper = np.ones_like(gray) * 235
-    paper = paper.astype(np.uint8)
-     
-    grain = np.random.normal(0, 3, paper.shape).astype(np.uint8)
-    paper = cv2.subtract(paper, grain)
- 
-    sketch = cv2.addWeighted(sketch_div, 0.6, thresh_blur, 0.4, 0)
- 
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    sketch = clahe.apply(sketch)
- 
-    kernel = np.ones((3, 3), np.float32)/25
-    smudge = cv2.filter2D(sketch, -1, kernel)
-    sketch = cv2.addWeighted(sketch, 0.7, smudge, 0.3, 0)
- 
-    rows, cols = sketch.shape
-    kernel_x = cv2.getGaussianKernel(cols, cols/5)
-    kernel_y = cv2.getGaussianKernel(rows, rows/5)
-    kernel = kernel_y * kernel_x.T
-    mask = 255 * kernel / np.linalg.norm(kernel)
-    sketch = sketch * (mask * 0.3 + 0.7)
-    
-  
-    sketch = cv2.multiply(sketch.astype(np.float32)/255, paper.astype(np.float32)/255) * 255
-    sketch = sketch.astype(np.uint8)
-    
-    sketch_path = image_path.replace('.jpg', '_pencil1.jpg')
-    cv2.imwrite(sketch_path, sketch)
+    sketch_path = image_path.replace('.jpg', '_watercolor.jpg')
+    cv2.imwrite(sketch_path, water_color)
     return sketch_path
 
 def convert_to_colored_pencil(image_path):
@@ -313,7 +275,7 @@ def uploadImage(request):
            
             sketch_path1 = convert_to_sketch_edges(upload_image.image.path)  
             sketch_path2 = convert_to_sketch_pencil(upload_image.image.path)  
-            sketch_path3 = convert_to_sketch_pencil1(upload_image.image.path)  
+            sketch_path3 = convert_to_watercolor(upload_image.image.path)  
             sketch_path4 = convert_to_sketch_edges1(upload_image.image.path)  
             sketch_path5 = convert_to_colored_pencil(upload_image.image.path)  
             sketch_path6 = convert_to_colored_pencil1(upload_image.image.path)  
@@ -322,7 +284,7 @@ def uploadImage(request):
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
             sketchurl2 = upload_image.image.url.replace('.jpg', '_edges1.jpg')
             sketchurl3 = upload_image.image.url.replace('.jpg', '_pencil.jpg')
-            sketchurl4 = upload_image.image.url.replace('.jpg', '_pencil1.jpg')
+            sketchurl4 = upload_image.image.url.replace('.jpg', '_watercolor.jpg')
             sketchurl5 = upload_image.image.url.replace('.jpg', '_pencil_colored.jpg')
             sketchurl6 = upload_image.image.url.replace('.jpg', '_pencil_colored1.jpg')
     
