@@ -194,6 +194,47 @@ def convert_to_charcoal(image_path):
     return output_path
 
 
+# digital pinting 
+
+def convert_to_digital_painting(image_path):
+
+    img = cv2.imread(image_path)
+    h,w = img.shape[:2]
+    if max(h,w) > 1200:
+        scale =  1200/max(h,w)
+        img= cv2.replace(img,(int(h*scale),int(w*scale)))
+    
+    img_biltaral = cv2.bilateralFilter(img,d=15,sigmaColor=100,sigmaSpace=100)
+
+    blur = cv2.GaussianBlur(img_biltaral,(15,15),0)
+
+    img_sharpened = cv2.addWeighted(img_biltaral,1.5,blur,-0.5,0)
+
+    hsv = cv2.cvtColor(img_sharpened,cv2.COLOR_BGR2HSV)
+    hsv[...,1]=hsv[...,1]*1.5
+    hsv[...,1]= np.clip(hsv[...,1],0,255)
+    img_staturated = cv2.cvtColor(hsv,cv2.COLOR_HSV2BGR)
+
+    rows,cols =img_staturated.shape[:2]
+    kernel_x = cv2.getGaussianKernel(cols,cols/5)
+    kernel_y = cv2.getGaussianKernel(rows,rows/5)
+    kernel = kernel_x * kernel_y.T
+    vintage = np.zeros((rows,cols,3) ,dtype=np.float32)
+    normalaized_kernel = kernel/np.max(kernel)
+
+    for i in range(3):
+        vintage[:,:,i]=normalaized_kernel
+
+    digital_painting = cv2.multiply(img_staturated.astype(np.float32),vintage.astype(np.float32))
+    digital_painting =  np.clip(digital_painting,0,255).astype(np.uint8)
+
+
+    output_path = image_path.replace('.jpg','digital_painting.jpg')
+    cv2.imwrite(output_path,digital_painting)
+    return output_path
+ 
+
+
  
 def uploadImage(request):
     sketchurl1 = None   
@@ -202,6 +243,7 @@ def uploadImage(request):
     sketchurl4 = None  
     sketchurl5 = None  
     sketchurl6 = None  
+    sketchurl7 = None  
     original_url=None
     
     if request.method == 'POST':
@@ -218,6 +260,7 @@ def uploadImage(request):
             sketch_path4 = convert_to_sketch_edges1(upload_image.image.path)  
             sketch_path5 = convert_to_oil_painting(upload_image.image.path)  
             sketch_path6 = convert_to_charcoal(upload_image.image.path)  
+            sketch_path7 = convert_to_digital_painting(upload_image.image.path)  
             
             
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
@@ -226,6 +269,7 @@ def uploadImage(request):
             sketchurl4 = upload_image.image.url.replace('.jpg', '_watercolor.jpg')
             sketchurl5 = upload_image.image.url.replace('.jpg', '_oil_paintig.jpg')
             sketchurl6 = upload_image.image.url.replace('.jpg', 'charcoal.jpg')
+            sketchurl7 = upload_image.image.url.replace('.jpg', 'digital_painting.jpg')
     
     else:
         form = imageuploadform()
@@ -239,6 +283,7 @@ def uploadImage(request):
         'sketchurl4': sketchurl4,
         'sketchurl5': sketchurl5,
         'sketchurl6': sketchurl6,
+        'sketchurl7': sketchurl7,
     })
 
 
