@@ -38,6 +38,8 @@ def convert_to_sketch_edges(image_path):
 
     return sketch_path
 
+# convert to pen sketch
+
 def convert_to_sketch_edges1(image_path):
     img = cv2.imread(image_path)
      
@@ -51,27 +53,22 @@ def convert_to_sketch_edges1(image_path):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
      
-    gray = cv2.bilateralFilter(gray, 9, 75, 75)
+    smooth_gray = cv2.bilateralFilter(gray, 9, 75, 75)
+
+    inverted = 255-smooth_gray
     
+    blurred = cv2.GaussianBlur(inverted,(21,21),0)
+
+    sketch_base = cv2.divide(gray,255-blurred,scale=256)
     
-    edges = cv2.Canny(gray, 10, 70)
-    
+    adaptiveedges = cv2.adaptiveThreshold(sketch_base,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,9,5)
+
+
      
-    kernel = np.ones((2, 2), np.uint8)
-    edges = cv2.dilate(edges, kernel, iterations=1)
+    kernel = np.ones((1, 1), np.uint8)
+    adaptive_edges = cv2.dilate(adaptiveedges, kernel, iterations=1)
     
-    
-    edges_inverted = 255 - edges
-    
-    
-    background = np.full_like(img, (245, 245, 245), dtype=np.uint8)
-    
-    
-    edges_3channel = cv2.cvtColor(edges_inverted, cv2.COLOR_GRAY2BGR)
-    
-     
-    alpha = 0.9
-    sketch = cv2.addWeighted(background, 1 - alpha, edges_3channel, alpha, 0)
+    sketch = cv2.cvtColor(adaptiveedges,cv2.COLOR_GRAY2BGR)
     
     sketch_path = image_path.replace('.jpg', '_edges1.jpg')
     cv2.imwrite(sketch_path, sketch)
