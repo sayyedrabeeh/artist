@@ -406,6 +406,33 @@ def convert_to_hatching_drawing(image_path):
     cv2.imwrite(output_path,hatching_image)
     return output_path
 
+# with calligraphy pen  drawing
+
+def convert_to_calligraphy_drawing(image_path):
+    brush_size=5
+    contrast =1.5
+
+    img =cv2.imread(image_path)
+    h,w =img.shape[:2]
+    if max(h,w) > 1200:
+        scale = 1200/max(h,w)
+        img = cv2.resize(img,(int(h*scale),int(w*scale)))
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    gray = cv2.convertScaleAbs(gray,alpha=contrast)
+
+    _,binary =cv2.threshold(gray,127,255,cv2.THRESH_BINARY_INV)
+    smoothed = cv2. morphologyEx(binary,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
+
+    canvas = np.ones_like(img) *255
+    for y in range(img.shape[0]):
+        for x in range(img.shape[1]):
+             if smoothed[y,x]:
+                    cv2.line(canvas, (x - brush_size, y), (x + brush_size, y), (0, 0, 0), 1)
+
+
+    output_path = image_path.replace('.jpg','caligraphy.jpg')
+    cv2.imwrite(output_path,canvas)
+    return output_path
 
 
 def uploadImage(request):
@@ -421,6 +448,7 @@ def uploadImage(request):
     sketchurl10 = None  
     sketchurl11 = None  
     sketchurl12 = None  
+    sketchurl13 = None  
     original_url=None
     
     if request.method == 'POST':
@@ -443,6 +471,7 @@ def uploadImage(request):
             sketch_path10 = convert_to_spray_painting(upload_image.image.path)  
             sketch_path11 = convert_to_tattoo_drawing(upload_image.image.path)  
             sketch_path12 = convert_to_hatching_drawing(upload_image.image.path)  
+            sketch_path13 = convert_to_calligraphy_drawing(upload_image.image.path)  
             
             
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
@@ -457,6 +486,7 @@ def uploadImage(request):
             sketchurl10 = upload_image.image.url.replace('.jpg', 'spray_painting.jpg')
             sketchurl11 = upload_image.image.url.replace('.jpg', 'tatoo_drawing.jpg')
             sketchurl12 = upload_image.image.url.replace('.jpg', 'hatching_image.jpg')
+            sketchurl13 = upload_image.image.url.replace('.jpg', 'caligraphy.jpg')
     
     else:
         form = imageuploadform()
@@ -476,6 +506,7 @@ def uploadImage(request):
         'sketchurl10': sketchurl10,
         'sketchurl11': sketchurl11,
         'sketchurl12': sketchurl12,
+        'sketchurl13': sketchurl13,
     })
 
 
