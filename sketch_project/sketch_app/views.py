@@ -233,9 +233,40 @@ def convert_to_digital_painting(image_path):
     cv2.imwrite(output_path,digital_painting)
     return output_path
  
+# acrylic_painting
+
+def convert_to_acrylic_painting(image_path):
+
+    img = cv2.imread(image_path)
+    h,w= img.shape[:2]
+    if max(h,w) > 1200:
+        scale = 1200/max(h,w)
+        img = cv2.resize(img,(int(h*scale),int(w*scale)))
+    img_bitaral = cv2.bilateralFilter(img,d=15,sigmaColor=100,sigmaSpace=100)
+
+    img_blured  = cv2.GaussianBlur(img_bitaral,(11,11),0)
+
+    img_sharpened = cv2.addWeighted(img_bitaral,1.5,img_blured,-0.5,0)
+
+    hsv = cv2.cvtColor(img_sharpened,cv2.COLOR_BGR2HSV)
+    hsv[...,1]=hsv[...,1]*1.5
+    hsv[...,1]= np.clip(hsv[...,1],0,255).astype(np.uint8)
+    img_staturated = cv2.cvtColor(hsv,cv2.COLOR_HSV2BGR)
+    
+    noise = np.random.normal(scale=5,size=img_staturated.shape).astype(np.uint8)
+
+    img_texutred = cv2.add(img_staturated,noise)
+
+    acrylic_painting = np.clip(img_texutred,0,255).astype(np.uint8)
 
 
- 
+    output_path = image_path.replace('.jpg','acrylic_painting.jpg')
+    cv2.imwrite(output_path,acrylic_painting)
+    return output_path    
+
+
+
+
 def uploadImage(request):
     sketchurl1 = None   
     sketchurl2 = None  
@@ -244,6 +275,7 @@ def uploadImage(request):
     sketchurl5 = None  
     sketchurl6 = None  
     sketchurl7 = None  
+    sketchurl8 = None  
     original_url=None
     
     if request.method == 'POST':
@@ -261,6 +293,7 @@ def uploadImage(request):
             sketch_path5 = convert_to_oil_painting(upload_image.image.path)  
             sketch_path6 = convert_to_charcoal(upload_image.image.path)  
             sketch_path7 = convert_to_digital_painting(upload_image.image.path)  
+            sketch_path8 = convert_to_acrylic_painting(upload_image.image.path)  
             
             
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
@@ -270,6 +303,7 @@ def uploadImage(request):
             sketchurl5 = upload_image.image.url.replace('.jpg', '_oil_paintig.jpg')
             sketchurl6 = upload_image.image.url.replace('.jpg', 'charcoal.jpg')
             sketchurl7 = upload_image.image.url.replace('.jpg', 'digital_painting.jpg')
+            sketchurl8 = upload_image.image.url.replace('.jpg', 'acrylic_painting.jpg')
     
     else:
         form = imageuploadform()
@@ -284,6 +318,7 @@ def uploadImage(request):
         'sketchurl5': sketchurl5,
         'sketchurl6': sketchurl6,
         'sketchurl7': sketchurl7,
+        'sketchurl8': sketchurl8,
     })
 
 
