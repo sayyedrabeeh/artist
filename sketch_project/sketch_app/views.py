@@ -331,6 +331,39 @@ def convert_to_spray_painting(image_path):
     return output_path
 
 
+# tatoo drawing
+
+def convert_to_tattoo_drawing(image_path):
+
+    img=cv2.imread(image_path)
+    h,w= img.shape[:2]
+
+    if max(h,w) > 1200:
+        scale = 1200/max(h,w)
+        img = cv2.resize(img,(int(h*scale),int(w*scale)))
+
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+    thredshold_img = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
+    
+    edges = cv2.Canny(thredshold_img,100,200)
+
+    contrast_img = cv2.convertScaleAbs(edges,alpha=2.0,beta=50)
+
+    kernel =np.ones((3,3),np.uint8)
+
+    delaited_edges = cv2.dilate(contrast_img,kernel,iterations=2)
+
+    blurred = cv2.GaussianBlur(delaited_edges,(3,3),0)
+
+    tatoo_drawing = cv2.addWeighted(contrast_img,0.7,blurred,0.3,0)
+    tatoo_drawing = cv2.convertScaleAbs(tatoo_drawing,alpha=1.2,beta=0)
+
+    output_path = image_path.replace('.jpg','tatoo_drawing.jpg')
+    cv2.imwrite(output_path,tatoo_drawing)
+    return output_path
+
+
 def uploadImage(request):
     sketchurl1 = None   
     sketchurl2 = None  
@@ -342,6 +375,7 @@ def uploadImage(request):
     sketchurl8 = None  
     sketchurl9 = None  
     sketchurl10 = None  
+    sketchurl11 = None  
     original_url=None
     
     if request.method == 'POST':
@@ -362,6 +396,7 @@ def uploadImage(request):
             sketch_path8 = convert_to_acrylic_painting(upload_image.image.path)  
             sketch_path9 = convert_to_pen_and_ink(upload_image.image.path)  
             sketch_path10 = convert_to_spray_painting(upload_image.image.path)  
+            sketch_path11 = convert_to_tattoo_drawing(upload_image.image.path)  
             
             
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
@@ -374,6 +409,7 @@ def uploadImage(request):
             sketchurl8 = upload_image.image.url.replace('.jpg', 'acrylic_painting.jpg')
             sketchurl9 = upload_image.image.url.replace('.jpg', 'pen_and_ink.jpg')
             sketchurl10 = upload_image.image.url.replace('.jpg', 'spray_painting.jpg')
+            sketchurl11 = upload_image.image.url.replace('.jpg', 'tatoo_drawing.jpg')
     
     else:
         form = imageuploadform()
@@ -391,6 +427,7 @@ def uploadImage(request):
         'sketchurl8': sketchurl8,
         'sketchurl9': sketchurl9,
         'sketchurl10': sketchurl10,
+        'sketchurl11': sketchurl11,
     })
 
 
