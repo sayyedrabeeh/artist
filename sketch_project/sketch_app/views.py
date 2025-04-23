@@ -161,101 +161,36 @@ def convert_to_oil_painting(image_path):
 
  
 
+# convert to charcoal
 
-def convert_to_colored_pencil1(image_path):
+def convert_to_charcoal(image_path):
     img = cv2.imread(image_path)
-    height, width = img.shape[:2]
+    h,w = img.shape[:2]
+    if max(h,w)> 1200:
+        scale = 1200/max(h,w)
+        img = cv2.resize(img,(int(h*scale),int(w*scale)))
+    
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+    edges = cv2.Laplacian(gray,cv2.CV_8U,ksize=5)
+    edges = cv2.GaussianBlur(edges,(3,3),0)
+    edges = cv2.threshold(edges,30,255,cv2.THRESH_BINARY_INV)[1]
+
+    smoothed = cv2.bilateralFilter(gray,9,75,75)
+    shadows = cv2.multiply(smoothed,edges,scale=1/255)
+
+    grain = np.random.normal(loc=128,scale=10,size= shadows.shape).astype(np.uint8)
+    grain = cv2.GaussianBlur(grain,(15,15),0)
+
+
+    charcoal = cv2.addWeighted(shadows,0.85,grain,0.15,10)
+    charcoal = np.clip(charcoal,0,255).astype(np.uint8) 
+
+    charcoal = cv2.convertScaleAbs(charcoal,alpha=1.4,beta=-30)
+
   
-    max_dim = 1200
-    if height > max_dim or width > max_dim:
-        scale = max_dim / max(height, width)
-        new_width = int(width * scale)
-        new_height = int(height * scale)
-        img = cv2.resize(img, (new_width, new_height))
-        
-        height, width = new_height, new_width
-    
-    
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-   
-    smooth = cv2.edgePreservingFilter(img, flags=1, sigma_s=60, sigma_r=0.4)
-    gray_smooth = cv2.cvtColor(smooth, cv2.COLOR_BGR2GRAY)
-    
-    
-    inverted = 255 - gray_smooth
-    blurred = cv2.GaussianBlur(inverted, (21, 21), 0)
-    pencil_sketch = cv2.divide(gray_smooth, 255 - blurred, scale=256)
-    
- 
-    thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                   cv2.THRESH_BINARY, 11, 2)
-    thresh_inv = 255 - thresh
-    thresh_blur = cv2.GaussianBlur(thresh_inv, (3, 3), 0)
- 
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
- 
-    hsv[:,:,1] = hsv[:,:,1] * 0.45
-   
-    hsv[:,:,2] = np.clip(hsv[:,:,2] * 1.1, 0, 255)
-    colored_base = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-    
-     
-    colored_base = cv2.detailEnhance(colored_base, sigma_s=10, sigma_r=0.15)
-    
-   
-    paper = np.ones((height, width, 3), np.uint8) * np.array([235, 235, 230], dtype=np.uint8)
-     
-    grain = np.random.normal(0, 3, paper.shape).astype(np.uint8)
-    paper = cv2.subtract(paper, grain)
-    
-    
-    pencil_3channel = cv2.cvtColor(pencil_sketch, cv2.COLOR_GRAY2BGR)
-    
-    thresh_3channel = cv2.cvtColor(thresh_blur, cv2.COLOR_GRAY2BGR)
-    
- 
-    colored_pencil = cv2.multiply(colored_base.astype(np.float32)/255, 
-                                  pencil_3channel.astype(np.float32)/255) * 255
-    colored_pencil = colored_pencil.astype(np.uint8)
-    
- 
-    alpha = 0.65   
-    beta = 0.4     
-    gamma = 0.0    
-    result = cv2.addWeighted(colored_pencil, alpha, thresh_3channel, beta, gamma)
-    
-   
-    stroke_texture = np.zeros_like(result)
-    for i in range(3):
-        noise = np.random.normal(0, 5, (height, width)).astype(np.uint8)
-        noise_blur = cv2.GaussianBlur(noise, (5, 5), 0)
-        stroke_texture[:,:,i] = noise_blur
-    
-    
-    result = cv2.addWeighted(result, 0.9, stroke_texture, 0.1, 0)
-    
- 
-    result = cv2.multiply(result.astype(np.float32)/255, paper.astype(np.float32)/255) * 255
-    result = result.astype(np.uint8)
-    
-   
-    rows, cols = result.shape[:2]
-    kernel_x = cv2.getGaussianKernel(cols, cols/5)
-    kernel_y = cv2.getGaussianKernel(rows, rows/5)
-    kernel = kernel_y * kernel_x.T
-    
-    mask = np.zeros((rows, cols, 3), dtype=np.float32)
-    normalized_kernel = 255 * kernel / np.linalg.norm(kernel)
-    for i in range(3):
-        mask[:,:,i] = normalized_kernel
-    
-    
-    result = result * (mask * 0.3 + 0.7)
-    result = result.astype(np.uint8)
-    
-    output_path = image_path.replace('.jpg', '_pencil_colored1.jpg')
-    cv2.imwrite(output_path, result)
+    output_path = image_path.replace('.jpg', 'charcoal.jpg')
+    cv2.imwrite(output_path, charcoal)
     return output_path
 
 
@@ -282,7 +217,7 @@ def uploadImage(request):
             sketch_path3 = convert_to_watercolor(upload_image.image.path)  
             sketch_path4 = convert_to_sketch_edges1(upload_image.image.path)  
             sketch_path5 = convert_to_oil_painting(upload_image.image.path)  
-            sketch_path6 = convert_to_colored_pencil1(upload_image.image.path)  
+            sketch_path6 = convert_to_charcoal(upload_image.image.path)  
             
             
             sketchurl1 = upload_image.image.url.replace('.jpg', '_edges.jpg')
@@ -290,7 +225,7 @@ def uploadImage(request):
             sketchurl3 = upload_image.image.url.replace('.jpg', '_pencil.jpg')
             sketchurl4 = upload_image.image.url.replace('.jpg', '_watercolor.jpg')
             sketchurl5 = upload_image.image.url.replace('.jpg', '_oil_paintig.jpg')
-            sketchurl6 = upload_image.image.url.replace('.jpg', '_pencil_colored1.jpg')
+            sketchurl6 = upload_image.image.url.replace('.jpg', 'charcoal.jpg')
     
     else:
         form = imageuploadform()
