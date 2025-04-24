@@ -44,7 +44,12 @@ opencv + numpy image processing
 
 
 
-[![Watch the video](screenshots/uploadingpage.png)](https://youtu.be/hpH1V91qr18)
+<a href="https://youtu.be/hpH1V91qr18" target="_blank">
+  <img src="screenshots/uploadingpage.png" alt="Watch the video" style="width:100%; max-width:600px; position: relative;">
+  <img src="https://img.icons8.com/ios-filled/50/ffffff/play--v1.png" alt="Play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+</a>
+
+▶️ Click the image above to watch the video
 
 ## 🛠️ Technology Stack
 
