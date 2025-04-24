@@ -2,7 +2,7 @@
 
 ![AI Sketch Studio Banner](screenshots/banner.png)
 
-A Django-powered web application that transforms your images into beautiful artistic sketches and paintings using advanced computer vision techniques.
+A Django web application that transforms your images into beautiful artistic sketches and paintings using advanced computer vision techniques.
 
 opencv + numpy image processing 
 
@@ -46,7 +46,7 @@ opencv + numpy image processing
 
 ▶️ Click the image below to watch the video
 
-[![Watch the video](screenshots/uploadingpage.png)](https://youtu.be/hpH1V91qr18)
+[![Watch the video](screenshots/uploadingpage.png)](https://youtu.be/ACHp_OJvYDU)
 
 
  ▶️ Click the image above to watch the video
