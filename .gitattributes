@@ -1,4 +1,9 @@
-static/** linguist-vendored
-templates/** linguist-vendored
+ *.html linguist-language=Python
+*.css linguist-language=Python 
+*.js linguist-language=Python
 
- *.py linguist-vendored=false
+# Keep some HTML/CSS/JS files as their original type
+# Adjust these patterns to control which files remain as HTML/CSS/JS
+home.html linguist-language=HTML
+# css/specific-folder/*.css linguist-language=CSS
+# js/important-files/*.js linguist-language=JavaScript
