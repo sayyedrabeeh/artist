@@ -63,7 +63,7 @@
                         </label>
                         <div class="mt-6 flex justify-center gap-3">
                             <span class="px-4 py-2 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">JPG</span>
-                            <span class="px-4 py-2 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">PNG</span>
+                            <!-- <span class="px-4 py-2 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">PNG</span> -->
                         </div>
                     </div>
                     
@@ -76,8 +76,15 @@
                 </form>
             </div>
 
+            {% if error_message %}
+            <div class="error" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 15px; margin: 20px 0; border-radius: 5px; font-size: 16px; font-family: Arial, sans-serif; text-align: center;">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        
+
             <!-- Results Section -->
-            {% if sketchurl1 and sketchurl2 and sketchurl3 and sketchurl4 and sketchurl5 and sketchurl6 and sketchurl7 and sketchurl8 and sketchurl9 and sketchurl10 and sketchurl11 and sketchurl12 and sketchurl13  %}
+            {% if sketchurl1 and sketchurl2 and sketchurl3 and sketchurl4 and sketchurl5 and sketchurl6 and sketchurl7 and sketchurl8 and sketchurl9 and sketchurl10 and sketchurl11 and sketchurl12 and sketchurl13 and sketchurl14  %}
             <div class="gradient-dark rounded-2xl shadow-2xl p-8 card-hover border border-indigo-900/30">
                 <h2 class="text-3xl font-bold mb-10 text-center neon-glow">Your Artistic Creations</h2>
                 
@@ -235,6 +242,16 @@
                         <img src="{{ sketchurl13 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
                         <div class="mt-4">
                             <a href="{{ sketchurl13 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </a>
+                        </div>
+                    </div>
+                     <!-- calighraphy Pen  -->
+                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
+                        <h3 class="text-xl font-semibold text-violet-300 mb-4">3D Drawing </h3>
+                        <img src="{{ sketchurl14 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
+                        <div class="mt-4">
+                            <a href="{{ sketchurl14 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
                                 <i class="fas fa-download mr-2"></i>Download
                             </a>
                         </div>
