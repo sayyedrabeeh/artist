@@ -46,7 +46,7 @@ opencv + numpy image processing
 
 ▶️ Click the image below to watch the video
 
-[![Watch the video](screenshots/uploadingpage.png)](https://youtu.be/ACHp_OJvYDU)
+[![Watch the video](screenshots/uploadingpage.png)](https://youtu.be/0zRect-m6tg)
 
 
  ▶️ Click the image above to watch the video
