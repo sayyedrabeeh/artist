@@ -1,5 +1,1 @@
-web: gunicorn sketch_project.sketch_project.wsgi
-
- 
-
-
+web: gunicorn sketch_project.wsgi
