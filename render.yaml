@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: django-app
+    name: artist
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn your_project_name.wsgi
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn sketch_project.wsgi"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: your_project_name.settings
+        value: sketch_project.settings
       - key: PYTHON_VERSION
         value: 3.11
