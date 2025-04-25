@@ -1,4 +1,4 @@
-web: gunicorn sketch_project.wsgi:application
+web: gunicorn sketch_project.sketch_project.wsgi
 
  
 
