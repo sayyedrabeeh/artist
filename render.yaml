@@ -3,8 +3,8 @@ services:
     name: artist
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn sketch_project.wsgi"
-    rootDir: sketch_project 
+    rootDir: sketch_project
+    startCommand: gunicorn sketch_project.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: sketch_project.settings
