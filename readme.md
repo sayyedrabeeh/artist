@@ -2,7 +2,13 @@
 
 
 
-This project is  a Django web application that transforms your images into beautiful artistic sketches and paintings using advanced computer vision techniques. If you find this repository helpful or interesting, please consider giving it a star! ⭐ and Follow Me for cool Projects
+This project is  a Django web application that transforms your images into beautiful artistic sketches and paintings using advanced computer vision techniques. If you find this repository helpful or interesting, please consider giving it a star⭐ and Follow Me for cool Projects
+
+### [⭐ **Star this project**](https://github.com/sayyedrabeeh/artist)
+### [👤 **Follow Me**](https://github.com/sayyedrabeeh)
+
+[![GitHub stars](https://img.shields.io/github/stars/sayyedrabeeh/artist.svg?style=social)](https://github.com/sayyedrabeeh/artist)
+
 
 ## Why Star This Repository?
 
