@@ -7,7 +7,7 @@ This project is  a Django web application that transforms your images into beaut
 ### [⭐ **Star this project**](https://github.com/sayyedrabeeh/artist)
 ### [👤 **Follow Me**](https://github.com/sayyedrabeeh)
 
-[![GitHub stars](https://img.shields.io/github/stars/sayyedrabeeh/artist.svg?style=social)](https://github.com/sayyedrabeeh/artist)
+ 
 
 
 ## Why Star This Repository?
