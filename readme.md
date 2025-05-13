@@ -1,8 +1,25 @@
 # 🎨 AI Sketch Studio
 
-![AI Sketch Studio Banner](screenshots/banner.png)
 
-A Django web application that transforms your images into beautiful artistic sketches and paintings using advanced computer vision techniques.
+
+This project is  a Django web application that transforms your images into beautiful artistic sketches and paintings using advanced computer vision techniques. If you find this repository helpful or interesting, please consider giving it a star! ⭐ and Follow Me for cool Projects
+
+## Why Star This Repository?
+
+- It helps others discover the project.
+- It motivates the me to keep improving it.
+- It supports open-source development!
+
+## How to Contribute
+
+If you want to contribute, feel free to fork the repository and submit a pull request. Also, don’t forget to star the repo!
+
+Thanks for your support! ❤
+
+[Star the project](https://github.com/sayyedrabeeh/virtual-painter)
+ 
+
+![AI Sketch Studio Banner](screenshots/banner.png)
 
 opencv + numpy image processing 
 
