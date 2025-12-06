@@ -203,7 +203,7 @@ def convert_to_charcoal(image_path):
     charcoal = cv2.convertScaleAbs(charcoal,alpha=1.4,beta=-30)
 
   
-    output_path = image_path.replace('.jpg', 'charcoal.jpg')
+    output_path = image_path.replace('.jpg', '_charcoal.jpg')
     cv2.imwrite(output_path, charcoal)
     return output_path
 
@@ -245,7 +245,7 @@ def convert_to_digital_painting(image_path):
     digital_painting =  np.clip(digital_painting,0,255).astype(np.uint8)
 
 
-    output_path = image_path.replace('.jpg','digital_painting.jpg')
+    output_path = image_path.replace('.jpg','_digital_painting.jpg')
     cv2.imwrite(output_path,digital_painting)
     return output_path
  
@@ -277,7 +277,7 @@ def convert_to_acrylic_painting(image_path):
     acrylic_painting = np.clip(img_texutred,0,255).astype(np.uint8)
 
 
-    output_path = image_path.replace('.jpg','acrylic_painting.jpg')
+    output_path = image_path.replace('.jpg','_acrylic_painting.jpg')
     cv2.imwrite(output_path,acrylic_painting)
     return output_path    
 
@@ -306,7 +306,7 @@ def convert_to_pen_and_ink(image_path):
 
     pen_and_ink = np.clip(ink_effect,0,255).astype(np.uint8)
 
-    output_path = image_path.replace('.jpg','pen_and_ink.jpg')
+    output_path = image_path.replace('.jpg','_pen_and_ink.jpg')
     cv2.imwrite(output_path,pen_and_ink)
     return output_path
 
@@ -345,7 +345,7 @@ def convert_to_spray_painting(image_path):
     spray_paint = np.clip(spray_paint,0,255).astype(np.uint8)
 
 
-    output_path = image_path.replace('.jpg','spray_painting.jpg')
+    output_path = image_path.replace('.jpg','_spray_painting.jpg')
     cv2.imwrite(output_path,spray_paint)
     return output_path
 
@@ -379,7 +379,7 @@ def convert_to_tattoo_drawing(image_path):
     tatoo_drawing = cv2.addWeighted(contrast_img,0.7,blurred,0.3,0)
     tatoo_drawing = cv2.convertScaleAbs(tatoo_drawing,alpha=1.2,beta=0)
 
-    output_path = image_path.replace('.jpg','tatoo_drawing.jpg')
+    output_path = image_path.replace('.jpg','_tatoo_drawing.jpg')
     cv2.imwrite(output_path,tatoo_drawing)
     return output_path
 
@@ -423,7 +423,7 @@ def convert_to_hatching_drawing(image_path):
     hatching_image[edges == 255]=[0,0,0]
 
     
-    output_path = image_path.replace('.jpg','hatching_image.jpg')
+    output_path = image_path.replace('.jpg','_hatching_image.jpg')
     cv2.imwrite(output_path,hatching_image)
     return output_path
 
@@ -452,7 +452,7 @@ def convert_to_calligraphy_drawing(image_path):
                     cv2.line(canvas, (x - brush_size, y), (x + brush_size, y), (0, 0, 0), 1)
 
 
-    output_path = image_path.replace('.jpg','caligraphy.jpg')
+    output_path = image_path.replace('.jpg','_caligraphy.jpg')
     cv2.imwrite(output_path,canvas)
     return output_path
 
@@ -561,14 +561,14 @@ def uploadImage(request):
             sketchurl3 = upload_image.image.url.replace('.jpg', '_pencil.jpg')
             sketchurl4 = upload_image.image.url.replace('.jpg', '_watercolor.jpg')
             sketchurl5 = upload_image.image.url.replace('.jpg', '_oil_paintig.jpg')
-            sketchurl6 = upload_image.image.url.replace('.jpg', 'charcoal.jpg')
-            sketchurl7 = upload_image.image.url.replace('.jpg', 'digital_painting.jpg')
-            sketchurl8 = upload_image.image.url.replace('.jpg', 'acrylic_painting.jpg')
-            sketchurl9 = upload_image.image.url.replace('.jpg', 'pen_and_ink.jpg')
-            sketchurl10 = upload_image.image.url.replace('.jpg', 'spray_painting.jpg')
-            sketchurl11 = upload_image.image.url.replace('.jpg', 'tatoo_drawing.jpg')
-            sketchurl12 = upload_image.image.url.replace('.jpg', 'hatching_image.jpg')
-            sketchurl13 = upload_image.image.url.replace('.jpg', 'caligraphy.jpg')
+            sketchurl6 = upload_image.image.url.replace('.jpg', '_charcoal.jpg')
+            sketchurl7 = upload_image.image.url.replace('.jpg', '_digital_painting.jpg')
+            sketchurl8 = upload_image.image.url.replace('.jpg', '_acrylic_painting.jpg')
+            sketchurl9 = upload_image.image.url.replace('.jpg', '_pen_and_ink.jpg')
+            sketchurl10 = upload_image.image.url.replace('.jpg', '_spray_painting.jpg')
+            sketchurl11 = upload_image.image.url.replace('.jpg', '_tatoo_drawing.jpg')
+            sketchurl12 = upload_image.image.url.replace('.jpg', '_hatching_image.jpg')
+            sketchurl13 = upload_image.image.url.replace('.jpg', '_caligraphy.jpg')
             sketchurl14 = upload_image.image.url.replace('.jpg', '_3d_drawing.jpg')
     
     else:
