@@ -3,274 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Sketch Studio</title>
+    <title>AI Sketch Studio - Professional Image Converter</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
     <style>
-        .neon-glow {
-            text-shadow: 0 0 10px #6366f1, 0 0 20px #6366f1, 0 0 30px #6366f1;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .gradient-dark {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
+        
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
-        .gradient-accent {
-            background: linear-gradient(145deg, #4f46e5, #7c3aed);
+        
+        .professional-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .card-hover {
+        
+        .professional-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15);
+        }
+        
+        .dropzone-border {
+            border: 2px dashed rgba(102, 126, 234, 0.3);
             transition: all 0.3s ease;
         }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        
+        .dropzone-border:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .dropzone-active {
+            border-color: #667eea !important;
+            background: rgba(102, 126, 234, 0.1) !important;
+        }
+        
+        .loader {
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body class=".gradient-dark text-gray-100">
-    <!-- Header -->
-    <header class="fixed top-0 w-full bg-[#0f0f1a]/80 backdrop-blur-lg z-50 border-b border-indigo-900/30">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="{% url 'home' %}" class="flex items-center space-x-2">
-                <i class="fas fa-paint-brush text-violet-400"></i>
-                <span class="text-xl font-bold text-violet-400">AI Sketch Studio</span>
-            </a>
-            <nav>
-                <a href="{% url 'home' %}" class="text-violet-400 hover:text-violet-300 transition-colors">
-                    <i class="fas fa-home mr-2"></i>Home
+<body class="text-gray-100">
+    <!-- Professional Header -->
+    <header class="professional-card sticky top-0 z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="{% url 'home' %}" class="flex items-center space-x-3 hover:opacity-80 transition">
+                    <div class="professional-gradient p-2 rounded-lg shadow-lg">
+                        <i class="fas fa-paint-brush text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold text-white">AI Sketch Studio</span>
+                        <p class="text-xs text-gray-400">Professional Image Converter</p>
+                    </div>
                 </a>
-            </nav>
+                <nav class="flex items-center space-x-4">
+                    <a href="{% url 'home' %}" class="professional-card px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-5 transition inline-flex items-center">
+                        <i class="fas fa-home mr-2 text-indigo-400"></i>
+                        <span class="text-gray-300">Home</span>
+                    </a>
+                </nav>
+            </div>
         </div>
     </header>
 
-    <main class="min-h-screen pt-20 px-4 pb-12" style="   background-color: #181d36;
-">
-        <div class="max-w-7xl mx-auto">
-            <!-- Title Section -->
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-bold neon-glow mb-4">Transform Your Images</h1>
-                <p class="text-violet-300 text-xl">Experience AI-powered artistic transformation</p>
-            </div>
-
-            <!-- Upload Section -->
-            <div class="gradient-dark rounded-2xl shadow-2xl p-8 mb-12 card-hover border border-indigo-900/30">
-                <form method="post" enctype="multipart/form-data" id="uploadForm" class="space-y-8">
-                    {% csrf_token %}
-                    <div class="border-2 border-dashed border-indigo-800/50 rounded-2xl p-12 text-center hover:border-violet-500/50 transition-colors duration-300 bg-[#1a1a2e]/50" id="dropZone">
-                        <input type="file" name="{{ form.image.name }}" accept="image/*" class="hidden" id="fileInput">
-                        <label for="fileInput" class="cursor-pointer block">
-                            <i class="fas fa-cloud-upload-alt text-7xl text-violet-400 mb-6"></i>
-                            <h3 class="text-2xl font-semibold text-violet-300 mb-2">Upload Your Image</h3>
-                            <p class="text-gray-400">Drag and drop or click to select</p>
-                        </label>
-                        <div class="mt-6 flex justify-center gap-3">
-                            <span class="px-4 py-2 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">JPG</span>
-                            <!-- <span class="px-4 py-2 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">PNG</span> -->
-                        </div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <button type="submit" class="gradient-accent text-white font-bold py-4 px-10 rounded-full text-lg shadow-xl hover:opacity-90 transition duration-300 inline-flex items-center">
-                            <i class="fas fa-wand-magic-sparkles mr-2"></i>
-                            Generate Sketches
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            {% if error_message %}
-            <div class="error" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 15px; margin: 20px 0; border-radius: 5px; font-size: 16px; font-family: Arial, sans-serif; text-align: center;">
-                {{ error_message }}
-            </div>
-        {% endif %}
-        
-
-            <!-- Results Section -->
-            {% if sketchurl1 and sketchurl2 and sketchurl3 and sketchurl4 and sketchurl5 and sketchurl6 and sketchurl7 and sketchurl8 and sketchurl9 and sketchurl10 and sketchurl11 and sketchurl12 and sketchurl13 and sketchurl14  %}
-            <div class="gradient-dark rounded-2xl shadow-2xl p-8 card-hover border border-indigo-900/30">
-                <h2 class="text-3xl font-bold mb-10 text-center neon-glow">Your Artistic Creations</h2>
-                
-                <!-- Original Image Row -->
-                <div class="mb-8">
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30 max-w-md mx-auto">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Original Image</h3>
-                        <img src="{{ original_url }}" alt="Original" class="rounded-lg shadow-lg w-full object-cover">
-                    </div>
-                </div>
-                
-                <!-- Artistic Effects Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Edge-Based Sketch -->
-
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Edge Sketch</h3>
-                        <img src="{{ sketchurl1 }}" alt="Edge Sketch" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl1 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-            
-                    <!-- Pencil Sketch -->
-
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Pen Sketch</h3>
-                        <img src="{{ sketchurl2 }}" alt="Pencil Sketch" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl2 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-            
-                    <!-- Colored Pencil Sketch -->
-
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4"> Pencil Sketch</h3>
-                        <img src="{{ sketchurl3 }}" alt="Colored Pencil Sketch" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl3 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-            
-                    <!-- Watercolor Effect -->
-
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Watercolor Painting</h3>
-                        <img src="{{ sketchurl4 }}" alt="Watercolor Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl4 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-            
-                    <!-- Oil Painting Effect -->
-
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Oil Painting</h3>
-                        <img src="{{ sketchurl5 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl5 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-
-                     <!-- charcoal -->
-
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Charcoal</h3>
-                        <img src="{{ sketchurl6 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl6 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- digital_painting -->
-
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Digital Painting</h3>
-                        <img src="{{ sketchurl7 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl7 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-
-                     <!-- acrylic painting -->
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">acrylic painting</h3>
-                        <img src="{{ sketchurl8 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl8 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-
-                     <!-- pen and ink  -->
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Pen and Ink</h3>
-                        <img src="{{ sketchurl9 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl9 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-
-                     <!-- spray paint  -->
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Spray Paint</h3>
-                        <img src="{{ sketchurl10 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl10 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-                     <!-- Tatto Drawing  -->
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Tatto Drawing</h3>
-                        <img src="{{ sketchurl11 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl11 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-
-                     <!-- Hatching Image -->
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Hatching Image</h3>
-                        <img src="{{ sketchurl12 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl12 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-
-                     <!-- calighraphy Pen  -->
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">Marker </h3>
-                        <img src="{{ sketchurl13 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl13 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-                     <!-- calighraphy Pen  -->
-                    <div class="bg-[#1a1a2e]/50 rounded-xl p-6 border border-indigo-900/30">
-                        <h3 class="text-xl font-semibold text-violet-300 mb-4">3D Drawing </h3>
-                        <img src="{{ sketchurl14 }}" alt="Oil Painting" class="rounded-lg shadow-lg w-full object-cover">
-                        <div class="mt-4">
-                            <a href="{{ sketchurl14 }}" download class="gradient-accent w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-
-
-                    
-                </div>
-            </div>
-            {% endif %}
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <!-- Page Title -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Image to Sketch Converter</h1>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto">Upload your image and transform it into 14 professional artistic styles using advanced AI technology</p>
         </div>
+
+        <!-- Upload Section -->
+        <div class="professional-card rounded-xl shadow-xl p-8 mb-12 hover-lift">
+            <form method="post" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+                <div class="dropzone-border rounded-xl p-12 text-center mb-6" id="dropZone">
+                    <input type="file" name="{{ form.image.name }}" accept="image/*" class="hidden" id="fileInput">
+                    <label for="fileInput" class="cursor-pointer block">
+                        <div class="professional-gradient w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fas fa-cloud-upload-alt text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Upload Your Image</h3>
+                        <p class="text-gray-400 mb-4" id="fileName">Drag and drop your file here or click to browse</p>
+                        <div class="flex items-center justify-center  ">
+                            <span class="professional-card px-4 py-1 text-indigo-300 rounded text-sm border border-indigo-900">JPG</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="professional-gradient text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 inline-flex items-center">
+                        <i class="fas fa-magic mr-2"></i>
+                        Generate Artistic Styles
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {% if error_message %}
+        <div class="professional-card border-2 border-red-600 rounded-lg p-4 mb-8 flex items-center">
+            <i class="fas fa-exclamation-circle text-red-500 text-2xl mr-3"></i>
+            <p class="text-red-400">{{ error_message }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Results Section -->
+        {% if sketchurl1 and sketchurl2 and sketchurl3 and sketchurl4 and sketchurl5 and sketchurl6 and sketchurl7 and sketchurl8 and sketchurl9 and sketchurl10 and sketchurl11 and sketchurl12 and sketchurl13 and sketchurl14 %}
+        <div class="professional-card rounded-xl shadow-xl p-8">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-white">Generated Results</h2>
+                <span class="professional-card px-4 py-2 rounded-lg text-sm text-gray-400 border border-gray-800">14 Styles Created</span>
+            </div>
+            
+            <!-- Original Image -->
+            <div class="mb-10">
+                <div class="professional-card rounded-lg p-6 max-w-2xl mx-auto">
+                    <div class="flex items-center mb-4">
+                        <div class="professional-gradient w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-image text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white">Original Image</h3>
+                    </div>
+                    <img src="{{ original_url }}" alt="Original" class="rounded-lg shadow-lg w-full object-cover">
+                </div>
+            </div>
+            
+            <!-- Results Grid -->
+            <div class="result-grid">
+                <!-- Edge Sketch -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Edge Sketch</h3>
+                        <div class="w-8 h-8 rounded-lg bg-indigo-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-pencil-alt text-indigo-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl1 }}" alt="Edge Sketch" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl1 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+        
+                <!-- Pen Sketch -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Pen Sketch</h3>
+                        <div class="w-8 h-8 rounded-lg bg-purple-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-pen text-purple-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl2 }}" alt="Pen Sketch" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl2 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+        
+                <!-- Pencil Sketch -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Pencil Sketch</h3>
+                        <div class="w-8 h-8 rounded-lg bg-gray-700 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-edit text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl3 }}" alt="Pencil Sketch" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl3 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+        
+                <!-- Watercolor Painting -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Watercolor Painting</h3>
+                        <div class="w-8 h-8 rounded-lg bg-blue-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-tint text-blue-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl4 }}" alt="Watercolor" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl4 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+        
+                <!-- Oil Painting -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Oil Painting</h3>
+                        <div class="w-8 h-8 rounded-lg bg-yellow-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-palette text-yellow-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl5 }}" alt="Oil Painting" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl5 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- Charcoal -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Charcoal</h3>
+                        <div class="w-8 h-8 rounded-lg bg-gray-800 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-fire text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl6 }}" alt="Charcoal" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl6 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- Digital Painting -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Digital Painting</h3>
+                        <div class="w-8 h-8 rounded-lg bg-cyan-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-laptop text-cyan-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl7 }}" alt="Digital Painting" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl7 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- Acrylic Painting -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Acrylic Painting</h3>
+                        <div class="w-8 h-8 rounded-lg bg-green-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-brush text-green-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl8 }}" alt="Acrylic" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl8 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- Pen and Ink -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Pen and Ink</h3>
+                        <div class="w-8 h-8 rounded-lg bg-violet-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-pen-fancy text-violet-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl9 }}" alt="Pen and Ink" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl9 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- Spray Paint -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Spray Paint</h3>
+                        <div class="w-8 h-8 rounded-lg bg-pink-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-spray-can text-pink-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl10 }}" alt="Spray Paint" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl10 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- Tattoo Drawing -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Tattoo Drawing</h3>
+                        <div class="w-8 h-8 rounded-lg bg-red-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-star text-red-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl11 }}" alt="Tattoo" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl11 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- Hatching Image -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Hatching Image</h3>
+                        <div class="w-8 h-8 rounded-lg bg-teal-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-grip-lines text-teal-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl12 }}" alt="Hatching" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl12 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- Marker -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Marker</h3>
+                        <div class="w-8 h-8 rounded-lg bg-orange-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-marker text-orange-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl13 }}" alt="Marker" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl13 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+
+                <!-- 3D Drawing -->
+                <div class="professional-card rounded-lg p-5 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">3D Drawing</h3>
+                        <div class="w-8 h-8 rounded-lg bg-sky-900 bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-cube text-sky-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <img src="{{ sketchurl14 }}" alt="3D Drawing" class="rounded-lg shadow-md w-full object-cover mb-4">
+                    <a href="{{ sketchurl14 }}" download class="professional-gradient w-full inline-flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg shadow hover:shadow-lg transition text-sm">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </main>
 
-    <!-- Loading Indicator -->
-    <div id="loading" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50">
-        <div class="bg-[#1a1a2e] p-8 rounded-2xl shadow-2xl text-center border border-indigo-900/30">
-            <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-violet-500 border-solid mx-auto mb-6"></div>
-            <p class="text-violet-300 text-xl font-semibold">Creating Your Artwork</p>
-            <p class="text-gray-400 mt-2">This may take a moment...</p>
+  
+    <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+        <div class="professional-card p-10 rounded-xl shadow-2xl text-center max-w-md">
+            <div class="loader mx-auto mb-6"></div>
+            <h3 class="text-xl font-semibold text-white mb-2">Processing Your Image</h3>
+            <p class="text-gray-400">Generating 14 artistic styles, please wait...</p>
         </div>
     </div>
 
@@ -279,6 +381,7 @@
         const loading = document.getElementById('loading');
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('fileName');
 
         form.addEventListener('submit', () => {
             loading.classList.remove('hidden');
@@ -286,19 +389,16 @@
 
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.classList.add('bg-[#1a1a2e]');
-            dropZone.classList.add('border-violet-500');
+            dropZone.classList.add('dropzone-active');
         });
 
         dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('bg-[#1a1a2e]');
-            dropZone.classList.remove('border-violet-500');
+            dropZone.classList.remove('dropzone-active');
         });
 
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropZone.classList.remove('bg-[#1a1a2e]');
-            dropZone.classList.remove('border-violet-500');
+            dropZone.classList.remove('dropzone-active');
             fileInput.files = e.dataTransfer.files;
             updateFileName(e.dataTransfer.files[0].name);
         });
@@ -310,9 +410,7 @@
         });
 
         function updateFileName(name) {
-            const label = dropZone.querySelector('p');
-            label.textContent = `Selected: ${name}`;
-            label.classList.add('text-violet-400');
+            fileNameDisplay.innerHTML = '<i class="fas fa-check-circle text-green-400 mr-2"></i>File selected: <span class="text-indigo-400 font-medium">' + name + '</span>';
         }
     </script>
 </body>
