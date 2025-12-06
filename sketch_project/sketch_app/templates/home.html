@@ -3,75 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artistic Sketch Converter - Dark</title>
+    <title>Artistic Sketch Converter - Professional</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
     <style>
-        .neon-glow {
-            text-shadow: 0 0 10px #6366f1, 0 0 20px #6366f1, 0 0 30px #6366f1;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .gradient-dark {
-            background: linear-gradient(135deg, #1e1b4b, #312e81);
+        
+        body {
+            overflow-x: hidden;
         }
-        .gradient-accent {
-            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        
+        .animated-bg {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
+            position: relative;
         }
-        .hover-grow {
-            transition: all 0.3s ease;
+        
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
         }
-        .hover-grow:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .professional-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+        
+        .feature-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+        
+        .professional-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .professional-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .professional-btn:hover::before {
+            left: 100%;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100">
-    <div class="min-h-screen flex flex-col items-center justify-center p-6">
-        <div class="text-center mb-12 hover-grow w-full max-w-4xl">
-            <div class="gradient-dark rounded-2xl p-10 shadow-2xl border border-indigo-900">
-                <h1 class="text-5xl font-bold mb-4 neon-glow">Artistic Sketch Creator</h1>
-                <p class="text-xl text-violet-300">Transform your photos into mesmerizing sketches</p>
+<body class="animated-bg text-gray-100">
+    <nav class="glass-card sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="professional-gradient p-2 rounded-lg">
+                        <i class="fas fa-palette text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-white">SketchAI</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-gray-300 hover:text-white transition">Features</a>
+                    <a href="#how-it-works" class="text-gray-300 hover:text-white transition">How It Works</a>
+                    <a href="#about" class="text-gray-300 hover:text-white transition">About</a>
+                </div>
             </div>
         </div>
-        
-        <div class="gradient-dark p-10 rounded-2xl shadow-2xl text-center max-w-2xl w-full hover-grow border border-indigo-900">
-            <div class="mb-8">
-                <i class="fas fa-pencil-alt text-6xl text-violet-400"></i>
+    </nav>
+    <section class="relative z-10 py-20 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="mb-6">
+                <span class="glass-card px-4 py-2 rounded-full text-sm text-purple-300 inline-block">
+                    AI-Powered Image Processing
+                </span>
             </div>
-            <h2 class="text-3xl font-bold mb-4 text-violet-300">Ready to Create?</h2>
-            <p class="text-gray-300 text-lg mb-8">Experience the magic of AI-powered artistic transformation</p>
-            <a href="{% url 'upload' %}" class="gradient-accent text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg hover:opacity-90 transition duration-300 inline-flex items-center">
-                <span>Start Creating</span>
-                <i class="fas fa-arrow-right ml-2"></i>
-            </a>
-        </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
+                Transform Photos Into
+                <span class="block bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+                    Artistic Sketches
+                </span>
+            </h1>
+            <p class="text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+                Professional-grade AI technology that converts your images into stunning artistic sketches in seconds. Perfect for designers, artists, and creative professionals.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="{% url 'upload' %}" class="professional-btn text-white font-semibold py-4 px-8 rounded-lg text-lg shadow-xl hover:shadow-2xl transition duration-300 inline-flex items-center">
+                    <i class="fas fa-upload mr-3"></i>
+                    <span>Get Started Free</span>
+                </a>
+                <a href="https://www.youtube.com/watch?v=0zRect-m6tg" target="_blank"
+                class="glass-card text-white font-semibold py-4 px-8 rounded-lg text-lg 
+                        hover:bg-white hover:bg-opacity-10 transition duration-300 
+                        inline-flex items-center">
+                    <i class="fas fa-play-circle mr-3"></i>
+                    <span>Watch Demo</span>
+                </a>
 
-        <div class="mt-16 text-center max-w-4xl w-full">
-            <h3 class="text-2xl font-bold mb-8 text-violet-300">The Creative Process</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="gradient-dark p-6 rounded-xl shadow-lg hover-grow border border-indigo-900">
-                    <div class="gradient-accent p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-upload text-white text-2xl"></i>
-                    </div>
-                    <h4 class="text-xl font-semibold mb-2 text-violet-300">1. Upload</h4>
-                    <p class="text-gray-300">Share your image in JPG or PNG format</p>
+            </div>
+        </div>
+    </section>
+    <section class="py-16 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="stats-grid">
+                <div class="glass-card p-6 rounded-xl text-center hover-lift">
+                    <div class="text-4xl font-bold text-purple-400 mb-2">50</div>
+                    <div class="text-gray-400">Images Processed</div>
                 </div>
-                <div class="gradient-dark p-6 rounded-xl shadow-lg hover-grow border border-indigo-900">
-                    <div class="gradient-accent p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-wand-magic-sparkles text-white text-2xl"></i>
-                    </div>
-                    <h4 class="text-xl font-semibold mb-2 text-violet-300">2. Transform</h4>
-                    <p class="text-gray-300">Watch as AI creates your sketch</p>
+                <div class="glass-card p-6 rounded-xl text-center hover-lift">
+                    <div class="text-4xl font-bold text-blue-400 mb-2">98%</div>
+                    <div class="text-gray-400">Customer Satisfaction</div>
                 </div>
-                <div class="gradient-dark p-6 rounded-xl shadow-lg hover-grow border border-indigo-900">
-                    <div class="gradient-accent p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <div class="glass-card p-6 rounded-xl text-center hover-lift">
+                    <div class="text-4xl font-bold text-indigo-400 mb-2">&lt;5s</div>
+                    <div class="text-gray-400">Average Processing Time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="features" class="py-20 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Powerful Features</h2>
+                <p class="text-xl text-gray-400">Everything you need for professional sketch conversion</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl hover-lift">
+                    <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Lightning Fast</h3>
+                    <p class="text-gray-400 leading-relaxed">Process images in under 5 seconds with our optimized AI engine. No waiting, instant results.</p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl hover-lift">
+                    <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-magic text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">AI-Powered</h3>
+                    <p class="text-gray-400 leading-relaxed">Advanced neural networks trained on millions of artistic styles for perfect results every time.</p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl hover-lift">
+                    <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Secure & Private</h3>
+                    <p class="text-gray-400 leading-relaxed">Your images are processed securely and automatically deleted after conversion. Complete privacy guaranteed.</p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl hover-lift">
+                    <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-file-image text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">High Quality Output</h3>
+                    <p class="text-gray-400 leading-relaxed">Export in high-resolution formats suitable for print and professional use. No quality loss.</p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl hover-lift">
+                    <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-sliders-h text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Customizable Styles</h3>
+                    <p class="text-gray-400 leading-relaxed">Choose from multiple sketch styles and adjust parameters to match your creative vision.</p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl hover-lift">
+                    <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
                         <i class="fas fa-download text-white text-2xl"></i>
                     </div>
-                    <h4 class="text-xl font-semibold mb-2 text-violet-300">3. Download</h4>
-                    <p class="text-gray-300">Get your finished masterpiece</p>
+                    <h3 class="text-2xl font-bold text-white mb-3">Batch Processing</h3>
+                    <p class="text-gray-400 leading-relaxed">Convert multiple images at once. Save time on large projects with batch upload and processing.</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    <section id="how-it-works" class="py-20 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">How It Works</h2>
+                <p class="text-xl text-gray-400">Three simple steps to create your sketch</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-12 relative">
+                <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 opacity-20" style="transform: translateY(-50%); z-index: -1;"></div>
+                <div class="text-center relative">
+                    <div class="professional-gradient w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold shadow-xl">
+                        1
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Upload Image</h3>
+                    <p class="text-gray-400 leading-relaxed">Select your image file (JPG, PNG) or drag and drop. Supports images up to 10MB.</p>
+                </div>
+                <div class="text-center relative">
+                    <div class="professional-gradient w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold shadow-xl">
+                        2
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">AI Processing</h3>
+                    <p class="text-gray-400 leading-relaxed">Our advanced AI analyzes your image and applies artistic sketch transformation in real-time.</p>
+                </div>
+                <div class="text-center relative">
+                    <div class="professional-gradient w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold shadow-xl">
+                        3
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Download Result</h3>
+                    <p class="text-gray-400 leading-relaxed">Preview your sketch and download in high-resolution. Share or use it in your projects instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-20 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-card p-12 rounded-3xl text-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Get Started?</h2>
+                <p class="text-xl text-gray-300 mb-8 leading-relaxed">Join thousands of creative professionals using SketchAI to transform their images.</p>
+                <a href="{% url 'upload' %}" class="professional-btn text-white font-semibold py-5 px-10 rounded-lg text-xl shadow-2xl hover:shadow-purple-500/30 transition duration-300 inline-flex items-center">
+                    <i class="fas fa-rocket mr-3"></i>
+                    <span>Start Creating Now</span>
+                </a>
+            </div>
+        </div>
+    </section>
+    <footer class="glass-card mt-20 py-8 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="professional-gradient p-2 rounded-lg">
+                    <i class="fas fa-palette text-white"></i>
+                </div>
+                <span class="text-lg font-bold text-white">SketchAI</span>
+            </div>
+            <p class="text-gray-400 mb-4">Professional AI-powered image to sketch conversion</p>
+            <div class="flex items-center justify-center space-x-6 text-gray-400">
+                <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                <span>•</span>
+                <a href="#" class="hover:text-white transition">Terms of Service</a>
+                <span>•</span>
+                <a href="#" class="hover:text-white transition">Contact</a>
+            </div>
+            <p class="text-gray-500 text-sm mt-6">© 2024 SketchAI. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
