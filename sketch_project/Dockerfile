@@ -1,22 +1,21 @@
 FROM python:3.10-slim
 
-WORKDIR /app
-
-# Install system dependencies
+# Install system dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
-    build-essential \
     libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /app/
+WORKDIR /app
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/
+COPY . .
 
 EXPOSE 8000
 
-RUN python manage.py collectstatic --noinput || true
-
-CMD gunicorn sketch_project.wsgi:application --bind 0.0.0.0:$PORT
+CMD ["gunicorn", "sketch_project.wsgi:application", "--bind", "0.0.0.0:8000"]
