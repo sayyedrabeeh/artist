@@ -12,19 +12,11 @@ import cloudinary.uploader
 import os
 from django.conf import settings
 
-# Configure Cloudinary
-cloudinary.config(
-    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    api_key=os.environ.get('CLOUDINARY_API_KEY'),
-    api_secret=os.environ.get('CLOUDINARY_API_SECRET')
-)
-
 def home(request):
     return render(request, 'home.html')
 
 # Helper function to download image from Cloudinary URL
 def download_image_from_url(url):
-    
     response = requests.get(url)
     if response.status_code != 200:
         raise Exception("Failed to download image")
@@ -34,7 +26,6 @@ def download_image_from_url(url):
 
 # Helper function to upload processed image to Cloudinary
 def upload_to_cloudinary(img_array, suffix):
-    
     _, buffer = cv2.imencode('.jpg', img_array)
     result = cloudinary.uploader.upload(
         BytesIO(buffer),
@@ -336,14 +327,24 @@ def uploadImage(request):
         form = imageuploadform(request.POST, request.FILES)
         
         if form.is_valid():
+            uploaded_file = request.FILES.get('image')
+            if uploaded_file:
+                file_name = uploaded_file.name.lower()
+                if not file_name.endswith('.jpg'):
+                    context['error_message'] = 'Please upload a valid JPG image only.'
+                    context['form'] = form
+                    return render(request, 'upload.html', context)
+            
             try:
                 upload_image = form.save()
                 original_url = upload_image.image.url
                 context['original_url'] = original_url
                 img = download_image_from_url(original_url)
+                
                 if img is None:
                     context['error_message'] = 'Failed to process the image.'
                     return render(request, 'upload.html', context)
+        
                 processed_images = {
                     'edges': convert_to_sketch_edges(img),
                     'edges1': convert_to_sketch_edges1(img),
@@ -360,6 +361,8 @@ def uploadImage(request):
                     'calligraphy': convert_to_calligraphy_drawing(img),
                     '3d_drawing': convert_to_3d_drawing(img)
                 }
+                
+                # Upload all processed images to Cloudinary
                 context['sketchurl1'] = upload_to_cloudinary(processed_images['edges'], '_edges')
                 context['sketchurl2'] = upload_to_cloudinary(processed_images['edges1'], '_edges1')
                 context['sketchurl3'] = upload_to_cloudinary(processed_images['pencil'], '_pencil')
@@ -374,6 +377,7 @@ def uploadImage(request):
                 context['sketchurl12'] = upload_to_cloudinary(processed_images['hatching_drawing'], '_hatching_drawing')
                 context['sketchurl13'] = upload_to_cloudinary(processed_images['calligraphy'], '_calligraphy')
                 context['sketchurl14'] = upload_to_cloudinary(processed_images['3d_drawing'], '_3d_drawing')
+                
             except Exception as e:
                 context['error_message'] = f'Error processing image: {str(e)}'
                 return render(request, 'upload.html', context)
@@ -381,4 +385,3 @@ def uploadImage(request):
             context['form'] = form
     
     return render(request, 'upload.html', context)
-    
