@@ -1,9 +1,10 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 
  
 
 class UploadedImage(models.Model):
-    image = models.ImageField(upload_to="uploads/")
+    image = CloudinaryField('image')
     uploaded_at = models.DateTimeField(auto_now_add=True)
